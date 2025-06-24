@@ -13,7 +13,6 @@ const path = require("path");
 const publicKey = fs.readFileSync(path.join(__dirname, "publicKey.pem"), "utf8");
 const privateKey = fs.readFileSync(path.join(__dirname, "private.pem"), "utf8");
 
-
 // --- Encrypt endpoint ---
 app.post("/encrypt", (req, res) => {
   const { text } = req.body;
@@ -51,6 +50,7 @@ app.post("/decrypt", (req, res) => {
 });
 
 // --- Start server ---
-app.listen(3001, () => {
-  console.log("Encryption server running at http://localhost:3001");
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Encryption server running at http://localhost:${PORT}`);
 });
