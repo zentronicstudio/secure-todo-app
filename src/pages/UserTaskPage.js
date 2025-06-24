@@ -27,8 +27,42 @@ export default function UserTaskPage() {
       window.location.href = "/";
       return;
     }
-    fetchTasks();
+
+    fetchTasks().then((all) => {
+      const now = new Date();
+      const today = now.toDateString();
+      const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1).toDateString();
+
+      const dueToday = all.filter(t => {
+        const d = t.dueDate ? new Date(t.dueDate) : null;
+        return d && d.toDateString() === today && !t.completed;
+      });
+
+      const dueTomorrow = all.filter(t => {
+        const d = t.dueDate ? new Date(t.dueDate) : null;
+        return d && d.toDateString() === tomorrow && !t.completed;
+      });
+
+      if ((dueToday.length || dueTomorrow.length) && !sessionStorage.getItem("hasReminded")) {
+        setTimeout(() => {
+          const sound = document.getElementById("reminder-sound");
+          if (sound) sound.play();
+
+          const parts = [];
+          if (dueToday.length) parts.push(`${dueToday.length} task(s) due today`);
+          if (dueTomorrow.length) parts.push(`${dueTomorrow.length} task(s) due tomorrow`);
+
+          alert(`📅 You have ${parts.join(" and ")}. Don't forget!`);
+          sessionStorage.setItem("hasReminded", "true");
+        }, 500);
+      }
+    });
   }, []);
+
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.toISOString().split("T")[0];
+  };
 
   const fetchTasks = async () => {
     const q = query(collection(db, "tasks"), where("user", "==", user.username));
@@ -82,24 +116,7 @@ export default function UserTaskPage() {
     });
 
     setTasks(all);
-
-    const dueTodayTasks = all.filter(t => t.isToday && !t.completed);
-    const dueTomorrowTasks = all.filter(t => t.isTomorrow && !t.completed);
-
-    if (dueTodayTasks.length || dueTomorrowTasks.length) {
-      setTimeout(() => {
-        const sound = document.getElementById("reminder-sound");
-        if (sound) sound.play();
-
-        const parts = [];
-        if (dueTodayTasks.length)
-          parts.push(`${dueTodayTasks.length} task(s) due today`);
-        if (dueTomorrowTasks.length)
-          parts.push(`${dueTomorrowTasks.length} task(s) due tomorrow`);
-
-        alert(`📅 You have ${parts.join(" and ")}. Don't forget!`);
-      }, 500);
-    }
+    return all; // so useEffect can process reminder
   };
 
   const addTask = async () => {
@@ -148,6 +165,7 @@ export default function UserTaskPage() {
 
   const logout = () => {
     localStorage.removeItem("user");
+    sessionStorage.removeItem("hasReminded");
     window.location.href = "/";
   };
 
@@ -165,7 +183,21 @@ export default function UserTaskPage() {
           <h2 style={{ marginBottom: "20px", color: "#333" }}>Welcome, {user.username}</h2>
 
           <input type="text" placeholder="Enter task" value={task} onChange={(e) => setTask(e.target.value)} style={inputStyle} />
-          <input type="date" value={dueDate} onChange={(e) => setDueDate(e.target.value)} style={inputStyle} />
+
+          <label style={{ textAlign: "left", width: "100%", marginBottom: "-10px", fontSize: "14px", color: "#555" }}>
+            Select due date
+          </label>
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            min={getTodayDate()}
+            style={inputStyle}
+            placeholder="Select date"
+            title="Select due date"
+            aria-label="Select due date"
+          />
+
           <select value={label} onChange={(e) => setLabel(e.target.value)} style={inputStyle}>
             <option value="">Select a label</option>
             <option value="🔴 Work">🔴 Work</option>
