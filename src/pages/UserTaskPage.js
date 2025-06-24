@@ -116,7 +116,7 @@ export default function UserTaskPage() {
     });
 
     setTasks(all);
-    return all; // so useEffect can process reminder
+    return all;
   };
 
   const addTask = async () => {
@@ -179,12 +179,22 @@ export default function UserTaskPage() {
   return (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh", background: "#f2f2f2" }}>
       <div style={{ flex: 1, display: "flex", justifyContent: "center", alignItems: "center", padding: "20px" }}>
-        <div style={{ background: "#fff", padding: "30px", borderRadius: "10px", boxShadow: "0 0 20px rgba(0,0,0,0.1)", width: "100%", maxWidth: "400px", textAlign: "center" }}>
-          <h2 style={{ marginBottom: "20px", color: "#333" }}>Welcome, {user.username}</h2>
+        <div style={{
+          background: "#fff",
+          padding: "30px",
+          borderRadius: "15px",
+          boxShadow: "0 0 20px rgba(0,0,0,0.1)",
+          width: "90vw",
+          maxWidth: "400px",
+          textAlign: "center",
+          marginTop: "20px",
+          marginBottom: "30px"
+        }}>
+          <h2 style={{ marginBottom: "20px", color: "#333", fontSize: "20px" }}>Welcome, {user.username}</h2>
 
           <input type="text" placeholder="Enter task" value={task} onChange={(e) => setTask(e.target.value)} style={inputStyle} />
 
-          <label style={{ textAlign: "left", width: "100%", marginBottom: "-10px", fontSize: "14px", color: "#555" }}>
+          <label style={{ textAlign: "left", width: "100%", marginBottom: "-10px", fontSize: "13px", color: "#555" }}>
             Select due date
           </label>
           <input
@@ -214,19 +224,19 @@ export default function UserTaskPage() {
             <button style={logoutBtn} onClick={logout}>Logout</button>
           </div>
 
-          <h3 style={{ marginTop: "30px", color: "#333" }}>Your Tasks</h3>
+          <h3 style={{ marginTop: "30px", color: "#333", fontSize: "16px" }}>Your Tasks</h3>
           <div style={{ textAlign: "left", marginTop: "10px" }}>
             {filteredTasks.map((t) => (
               <div key={t.id} style={{
                 backgroundColor: t.completed ? "#dfe6e9" : "#f1f2f6",
                 padding: "10px",
                 marginBottom: "10px",
-                borderRadius: "5px",
+                borderRadius: "8px",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center"
               }}>
-                <span>
+                <span style={{ paddingLeft: "3px" }}>
                   {t.label && <strong style={{ marginRight: "5px" }}>{t.label}</strong>}
                   {t.text}
                   {t.dueDate && <small style={{ marginLeft: "8px", color: "#888" }}>(Due: {new Date(t.dueDate).toLocaleDateString()})</small>}
@@ -256,7 +266,7 @@ const inputStyle = {
   padding: "10px",
   marginBottom: "15px",
   border: "1px solid #ccc",
-  borderRadius: "5px",
+  borderRadius: "8px",
 };
 const addBtn = {
   flex: 1,
@@ -264,7 +274,7 @@ const addBtn = {
   backgroundColor: "#00b894",
   color: "#fff",
   border: "none",
-  borderRadius: "5px",
+  borderRadius: "8px",
   cursor: "pointer",
 };
 const logoutBtn = { ...addBtn, backgroundColor: "#d63031" };
@@ -272,7 +282,7 @@ const markBtn = {
   backgroundColor: "#0984e3",
   border: "none",
   color: "#fff",
-  borderRadius: "5px",
+  borderRadius: "8px",
   padding: "4px 8px",
   cursor: "pointer",
 };
@@ -300,13 +310,13 @@ function Legend({ setFilter }) {
   ];
   return (
     <div style={{ width: "100%", padding: "15px 20px", backgroundColor: "#fff", borderTop: "1px solid #ddd", textAlign: "center" }}>
-      <h4 style={{ marginBottom: "10px", color: "#333" }}>Label Legend</h4>
+      <h4 style={{ marginBottom: "10px", color: "#333", fontSize: "15px" }}>Label Legend</h4>
       <div style={{ display: "flex", justifyContent: "center", flexWrap: "wrap", gap: "10px" }}>
         {items.map((i) => (
           <button key={i.name} onClick={() => setFilter(i.name)} style={{
             padding: "6px 12px",
             border: "1px solid #ccc",
-            borderRadius: "5px",
+            borderRadius: "8px",
             backgroundColor: "#f9f9f9",
             cursor: "pointer"
           }}>
@@ -321,7 +331,7 @@ function Legend({ setFilter }) {
           backgroundColor: "#2d3436",
           color: "#fff",
           border: "none",
-          borderRadius: "5px",
+          borderRadius: "8px",
           cursor: "pointer"
         }}>✅ Completed Tasks</button>
 
@@ -330,7 +340,7 @@ function Legend({ setFilter }) {
           backgroundColor: "#e17055",
           color: "#fff",
           border: "none",
-          borderRadius: "5px",
+          borderRadius: "8px",
           cursor: "pointer"
         }}>🕒 Pending Tasks</button>
 
@@ -339,7 +349,7 @@ function Legend({ setFilter }) {
           backgroundColor: "#00cec9",
           color: "#fff",
           border: "none",
-          borderRadius: "5px",
+          borderRadius: "8px",
           cursor: "pointer"
         }}>🔁 All Tasks</button>
       </div>
