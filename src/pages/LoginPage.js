@@ -43,7 +43,7 @@ export default function LoginPage() {
 
     alert("Login success!");
     localStorage.setItem("user", JSON.stringify(data));
-    //window.location.href = "/tasks";
+    window.location.href = "/tasks";
   };
 
   return (
